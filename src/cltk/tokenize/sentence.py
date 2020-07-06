@@ -15,6 +15,7 @@ from typing import Any, Dict, Generator, List, Set, Tuple
 from cltk.tokenize.greek.params import GreekLanguageVars
 from cltk.tokenize.latin.params import LatinLanguageVars
 from cltk.tokenize.sanskrit.params import SanskritLanguageVars
+from cltk.tokenize.old_norse.params import OldNorseLanguageVars
 from cltk.utils.file_operations import open_pickle
 from nltk.tokenize.punkt import PunktLanguageVars, PunktSentenceTokenizer
 
@@ -154,12 +155,16 @@ class TokenizeSentence(BasePunktSentenceTokenizer):  # pylint: disable=R0903
             self.sent_end_chars = SanskritLanguageVars.sent_end_chars
             self.sent_end_chars_regex = "|".join(self.sent_end_chars)
             self.pattern = rf"(?<=[{self.sent_end_chars_regex}])\s"
+        elif self.language == "old-norse":
+            self.sent_end_chars = OldNorseLanguageVars.sent_end_chars
+            self.sent_end_chars_regex = "|".join(self.sent_end_chars)
+            self.pattern = rf"(?<=[{self.sent_end_chars_regex}])\s"
         else:
             # Warn that NLTK Punkt is being used by default???
             tokenizer = PunktSentenceTokenizer()
 
         # mk list of tokenized sentences
-        if self.language == "greek" or self.language in INDIAN_LANGUAGES:
+        if self.language == "greek" or self.language in INDIAN_LANGUAGES or self.language == "old-norse":
             return re.split(self.pattern, untokenized_string)
         else:
             return tokenizer.tokenize(untokenized_string)
