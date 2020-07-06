@@ -155,7 +155,7 @@ class TokenizeSentence(BasePunktSentenceTokenizer):  # pylint: disable=R0903
             self.sent_end_chars = SanskritLanguageVars.sent_end_chars
             self.sent_end_chars_regex = "|".join(self.sent_end_chars)
             self.pattern = rf"(?<=[{self.sent_end_chars_regex}])\s"
-        elif self.language == "old-norse":
+        elif self.language == "old_norse":
             self.sent_end_chars = OldNorseLanguageVars.sent_end_chars
             self.sent_end_chars_regex = "|".join(self.sent_end_chars)
             self.pattern = rf"(?<=[{self.sent_end_chars_regex}])\s"
@@ -164,7 +164,8 @@ class TokenizeSentence(BasePunktSentenceTokenizer):  # pylint: disable=R0903
             tokenizer = PunktSentenceTokenizer()
 
         # mk list of tokenized sentences
-        if self.language == "greek" or self.language in INDIAN_LANGUAGES or self.language == "old-norse":
+        if self.language == "greek" or self.language in INDIAN_LANGUAGES or\
+                self.language == "old_norse":
             return re.split(self.pattern, untokenized_string)
         else:
             return tokenizer.tokenize(untokenized_string)

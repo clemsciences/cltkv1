@@ -24,5 +24,5 @@ class OldNorseRegexSentenceTokenizer(BaseRegexSentenceTokenizer):
 
     def __init__(self: object):
         super().__init__(
-            language="old-norse", sent_end_chars=OldNorseLanguageVars.sent_end_chars
+            language="old_norse", sent_end_chars=OldNorseLanguageVars.sent_end_chars
         )
