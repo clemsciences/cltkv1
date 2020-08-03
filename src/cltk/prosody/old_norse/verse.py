@@ -4,22 +4,13 @@
 import re
 from math import floor
 
-import cltk.phonology.old_norse.syllabifier as old_norse_syllabifier
-from cltk.stops.non import STOPS
-from cltk.tokenize.word import WordTokenizer
-
 from cltk.core.cltk_logger import logger
-from cltk.phonology.old_norse.transcription import (
-    DIPHTHONGS_IPA,
-    Consonant,
-    DIPHTHONGS_IPA_class,
-    IPA_class,
-    Vowel,
-    measure_old_norse_syllable,
-    old_norse_rules,
-)
+import cltk.phonology.old_norse.syllabifier as old_norse_syllabifier
+import cltk.phonology.old_norse.transcription as old_norse_transcriber 
 from cltk.phonology.syllabify import Syllabifier
 from cltk.phonology.utils import Transcriber
+from cltk.stops.non import STOPS
+from cltk.tokenize.word import WordTokenizer
 from cltk.tag.pos import POSTag
 
 __author__ = ["Clément Besnier <clemsciences@aol.com>"]
@@ -110,6 +101,9 @@ class MetreManager:
 
 
 class ShortLine:
+    """
+    
+    """
     def __init__(self, text):
         self.text = text
         self.tokenizer = WordTokenizer("old_norse")
@@ -176,8 +170,8 @@ class ShortLine:
                 word2 = normalize(other_short_line.tokenized_text[k])
                 if word1 not in STOPS and word2 not in STOPS:
                     if (
-                        isinstance(sound1, Consonant)
-                        and isinstance(sound2, Consonant)
+                        isinstance(sound1, old_norse_transcriber.Consonant)
+                        and isinstance(sound2, old_norse_transcriber.Consonant)
                         and sound1.ipar == sound2.ipar
                     ):
                         self.alliterations.append((word1, word2))
@@ -189,6 +183,10 @@ class ShortLine:
 
 
 class LongLine:
+    """
+    
+    """
+    
     def __init__(self, text):
         self.text = text
         self.tokenizer = WordTokenizer("old_norse")
@@ -252,10 +250,10 @@ class LongLine:
                 for k, sound2 in enumerate(self.first_sounds[j + 1 :]):
                     word2 = normalize(self.tokenized_text[k])
                     if word1 not in STOPS and sound2 not in STOPS:
-                        if isinstance(sound1, Consonant) and sound1.ipar == sound2.ipar:
+                        if isinstance(sound1, old_norse_transcriberConsonant) and sound1.ipar == sound2.ipar:
                             self.alliterations.append((word1, word2))
                             self.n_alliterations += 1
-                        elif isinstance(sound1, Vowel) and isinstance(sound2, Vowel):
+                        elif isinstance(sound1, old_norse_transcriber.Vowel) and isinstance(sound2, old_norse_transcriber.Vowel):
                             self.alliterations.append((word1, word2))
                             self.n_alliterations += 1
         return self.alliterations, self.n_alliterations
@@ -318,7 +316,8 @@ class Metre:
             self.syllabified_text = []
         else:
             transcriber = Transcriber(
-                DIPHTHONGS_IPA, DIPHTHONGS_IPA_class, IPA_class, old_norse_rules
+                old_norse_transcriber.DIPHTHONGS_IPA, old_norse_transcriber.DIPHTHONGS_IPA_class, 
+                old_norse_transcriber.IPA_class, old_norse_transcriber.old_norse_rules
             )
             transcribed_text = []
             phonological_features_text = []
@@ -434,7 +433,8 @@ class UnspecifiedStanza(Metre):
         :return:
         """
         transcriber = Transcriber(
-            DIPHTHONGS_IPA, DIPHTHONGS_IPA_class, IPA_class, old_norse_rules
+            old_norse_transcriber.DIPHTHONGS_IPA, old_norse_transcriber.DIPHTHONGS_IPA_class, 
+            old_norse_transcriber.IPA_class, old_norse_transcriber.old_norse_rules
         )
         transcribed_text = []
         phonological_features_text = []
@@ -652,7 +652,8 @@ class PoetryTools:
     def __init__(self):
         self.syllabifier = Syllabifier(language="old_norse_ipa")
         self.tr = Transcriber(
-            DIPHTHONGS_IPA, DIPHTHONGS_IPA_class, IPA_class, old_norse_rules
+            old_norse_transcriber.DIPHTHONGS_IPA, old_norse_transcriber.DIPHTHONGS_IPA_class, 
+            old_norse_transcriber.IPA_class, old_norse_transcriber.old_norse_rules
         )
         self.tagger = POSTag("old_norse")
 
@@ -691,7 +692,7 @@ class PoeticWord:
         self.syl = poetry_tools.syllabifier.syllabify_phonemes(phonemes)
         for i, syllable in enumerate(self.syl):
             self.ipa_transcription.append([])
-            syl_len = measure_old_norse_syllable(syllable).value
+            syl_len = old_norse_transcriber.measure_old_norse_syllable(syllable).value
             syl_stress = 1 if i == 0 else 0
 
             self.length.append(syl_len)
